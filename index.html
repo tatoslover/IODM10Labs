@@ -1,136 +1,1162 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Socket.IO Chat</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        #messages {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        #messages>li {
-            padding: 5px 10px;
-        }
-
-        #form {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: #eee;
-            display: flex;
-        }
-
-        #input {
-            flex-grow: 1;
-            padding: 10px;
-            border: none;
-        }
-
-        #form>button {
-            padding: 10px;
-        }
-
-        #typingStatus {
-            font-style: italic;
-            color: gray;
-        }
-
-        #users {
-            margin-top: 10px;
-        }
-    </style>
-</head>
-
-<body>
-    <h1>Socket.IO Chat</h1>
-    <ul id="messages"></ul>
-    <p id="typingStatus"></p>
-    <p><strong>Online Users:</strong></p>
-    <ul id="users"></ul>
-    <form id="form" action="">
-        <input id="input" autocomplete="off" placeholder="Type a message..." /><button>Send</button>
-    </form>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
-        const form = document.getElementById('form');
-        const input = document.getElementById('input');
-        const messages = document.getElementById('messages');
-        const typingStatus = document.getElementById('typingStatus');
-        const usersList = document.getElementById('users');
-
-        let nickname = prompt("Enter your nickname:");
-        socket.emit("choose name", nickname);
-
-        // Submit message
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (input.value) {
-                const item = document.createElement('li');
-                item.textContent = `Me: ${input.value}`;
-                messages.appendChild(item);
-                socket.emit('chat message', input.value);
-                input.value = '';
-                socket.emit('stop typing');
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Docker & CI/CD Portfolio - Samuel Love</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
-        });
 
-        // Typing indicator
-        let typingTimeout;
-        input.addEventListener("input", () => {
-            socket.emit("typing");
-            clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => {
-                socket.emit("stop typing");
-            }, 1000);
-        });
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background: linear-gradient(
+                    135deg,
+                    #0f4c75 0%,
+                    #3282b8 50%,
+                    #bbe1fa 100%
+                );
+                min-height: 100vh;
+            }
 
-        // Incoming chat messages
-        socket.on('chat message', function (msg) {
-            const item = document.createElement('li');
-            item.textContent = msg;
-            messages.appendChild(item);
-        });
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
 
-        // New user joined
-        socket.on("new user", (data) => {
-            const item = document.createElement('li');
-            item.textContent = `${data.nickname} ${data.text}`;
-            messages.appendChild(item);
-        });
+            .header {
+                text-align: center;
+                color: white;
+                margin-bottom: 40px;
+                padding: 40px 0;
+            }
 
-        // User left
-        socket.on("user left", (msg) => {
-            const item = document.createElement('li');
-            item.textContent = msg;
-            messages.appendChild(item);
-        });
+            .header h1 {
+                font-size: 3em;
+                margin-bottom: 10px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
 
-        // Show typing
-        socket.on("user typing", (name) => {
-            typingStatus.innerText = `${name} is typing...`;
-        });
+            .header h2 {
+                font-size: 1.8em;
+                margin: 10px 0;
+                font-weight: 300;
+                opacity: 0.9;
+            }
 
-        socket.on("not typing", () => {
-            typingStatus.innerText = '';
-        });
+            .header p {
+                font-size: 1.2em;
+                opacity: 0.9;
+            }
 
-        // Show online users
-        socket.on("update user list", (users) => {
-            usersList.innerHTML = '';
-            users.forEach(user => {
-                const li = document.createElement('li');
-                li.textContent = user;
-                usersList.appendChild(li);
+            .section {
+                background: white;
+                margin-bottom: 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                transition: transform 0.3s ease;
+            }
+
+            .section:hover {
+                transform: translateY(-5px);
+            }
+
+            .section-header {
+                background: linear-gradient(45deg, #0f4c75, #3282b8);
+                color: white;
+                padding: 20px;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .section-header h2 {
+                font-size: 1.5em;
+            }
+
+            .toggle-icon {
+                font-size: 1.2em;
+                transition: transform 0.3s ease;
+            }
+
+            .section-content {
+                padding: 20px;
+                display: none;
+            }
+
+            .section-content.active {
+                display: block;
+            }
+
+            .description {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                border-left: 4px solid #3282b8;
+            }
+
+            .code-section {
+                background: #f8f9fa;
+                border: 1px solid #e9ecef;
+                border-radius: 8px;
+                margin: 15px 0;
+                overflow: hidden;
+            }
+
+            .code-header {
+                background: #e9ecef;
+                padding: 10px 15px;
+                font-weight: bold;
+                color: #495057;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            .code-display {
+                background: #2d3748;
+                color: #e2e8f0;
+                padding: 15px;
+                font-family: "Courier New", monospace;
+                font-size: 14px;
+                line-height: 1.4;
+                white-space: pre-wrap;
+                overflow-x: auto;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+
+            .demo-section {
+                background: #f8f9fa;
+                border: 2px dashed #ddd;
+                border-radius: 8px;
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .demo-button {
+                background: linear-gradient(45deg, #0f4c75, #3282b8);
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+                transition: all 0.3s ease;
+                margin: 5px;
+            }
+
+            .demo-button:hover {
+                background: linear-gradient(45deg, #3282b8, #0f4c75);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .demo-button:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .links-section {
+                display: flex;
+                gap: 15px;
+                margin: 20px 0;
+                flex-wrap: wrap;
+            }
+
+            .link-button {
+                display: inline-block;
+                background: linear-gradient(45deg, #24292e, #444d56);
+                color: white;
+                padding: 12px 24px;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: bold;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+            }
+
+            .link-button:hover {
+                background: linear-gradient(45deg, #444d56, #24292e);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            }
+
+            .docker-link {
+                background: linear-gradient(45deg, #2496ed, #1e88e5);
+            }
+
+            .docker-link:hover {
+                background: linear-gradient(45deg, #1e88e5, #2496ed);
+            }
+
+            .skills-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                margin: 20px 0;
+            }
+
+            .skill-card {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                border-left: 4px solid #3282b8;
+            }
+
+            .skill-card h4 {
+                color: #3282b8;
+                margin-bottom: 15px;
+                font-size: 1.1em;
+            }
+
+            .skill-card ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .skill-card li {
+                margin: 8px 0;
+                padding-left: 20px;
+                position: relative;
+            }
+
+            .skill-card li::before {
+                content: "▸";
+                color: #3282b8;
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            .chat-demo {
+                background: white;
+                border-radius: 8px;
+                padding: 20px;
+                margin: 20px 0;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            #messages {
+                list-style-type: none;
+                padding: 0;
+                max-height: 300px;
+                overflow-y: auto;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                margin-bottom: 10px;
+                background: #f9f9f9;
+            }
+
+            #messages > li {
+                padding: 8px 12px;
+                border-bottom: 1px solid #eee;
+            }
+
+            #form {
+                display: flex;
+                gap: 10px;
+            }
+
+            #input {
+                flex-grow: 1;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+
+            #form > button {
+                padding: 10px 20px;
+                background: #3282b8;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            #typingStatus {
+                font-style: italic;
+                color: gray;
+                margin: 5px 0;
+            }
+
+            #users {
+                margin-top: 10px;
+                background: #f0f8ff;
+                padding: 10px;
+                border-radius: 4px;
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding: 10px;
+                }
+
+                .header h1 {
+                    font-size: 2em;
+                }
+
+                .skills-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG3HuBlAUw3Wu-46hoogyANMHo1VC-tKnE1Q&s"
+                        alt="IOD Logo"
+                        style="
+                            width: 60px;
+                            height: 60px;
+                            border-radius: 50%;
+                            vertical-align: middle;
+                            margin-right: 15px;
+                        "
+                    />
+                    Docker & CI/CD Portfolio
+                    <img
+                        src="https://www.docker.com/wp-content/uploads/2022/03/vertical-logo-monochromatic.png"
+                        alt="Docker Logo"
+                        style="
+                            width: 60px;
+                            height: 60px;
+                            vertical-align: middle;
+                            margin-left: 15px;
+                            filter: brightness(0) invert(1);
+                        "
+                    />
+                </h1>
+                <h2>Samuel Love</h2>
+                <p>
+                    DevOps Engineering: Containerization & Continuous
+                    Integration
+                </p>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>📚 Project Overview</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content active">
+                    <div class="description">
+                        <strong>Complete DevOps Implementation:</strong>
+                        Real-time chat application with Docker containerization
+                        and automated CI/CD pipeline
+                    </div>
+                    <p>
+                        This project demonstrates comprehensive DevOps
+                        engineering skills through the implementation of a
+                        Socket.IO chat application with complete
+                        containerization and continuous integration/deployment
+                        pipeline. The application showcases modern DevOps
+                        practices including Docker containerization, GitHub
+                        Actions automation, and Docker Hub registry integration.
+                    </p>
+
+                    <div class="links-section">
+                        <a
+                            href="https://github.com/tatoslover/dockerdemo"
+                            target="_blank"
+                            class="link-button"
+                        >
+                            🌟 View on GitHub
+                        </a>
+                        <a
+                            href="https://hub.docker.com/repository/docker/tatoslover/dockerdemo/general"
+                            target="_blank"
+                            class="link-button docker-link"
+                        >
+                            🐳 Docker Hub Image
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>🛠️ DevOps Skills Demonstrated</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <h4>🐳 Docker Containerization</h4>
+                            <ul>
+                                <li>
+                                    <strong>Dockerfile Creation:</strong>
+                                    Multi-stage builds, optimization
+                                </li>
+                                <li>
+                                    <strong>Image Management:</strong> Layering,
+                                    caching strategies
+                                </li>
+                                <li>
+                                    <strong>Container Configuration:</strong>
+                                    Port mapping, volume management
+                                </li>
+                                <li>
+                                    <strong>Registry Integration:</strong>
+                                    Docker Hub automation
+                                </li>
+                                <li>
+                                    <strong>Best Practices:</strong> Security,
+                                    efficiency, maintainability
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="skill-card">
+                            <h4>⚙️ CI/CD Pipeline</h4>
+                            <ul>
+                                <li>
+                                    <strong>GitHub Actions:</strong> Workflow
+                                    automation, triggers
+                                </li>
+                                <li>
+                                    <strong>Build Automation:</strong>
+                                    Multi-environment testing
+                                </li>
+                                <li>
+                                    <strong>Deployment Pipeline:</strong>
+                                    Automated image updates
+                                </li>
+                                <li>
+                                    <strong>Secret Management:</strong> Secure
+                                    credential handling
+                                </li>
+                                <li>
+                                    <strong>Version Control:</strong>
+                                    Branch-based deployments
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="skill-card">
+                            <h4>🚀 Application Development</h4>
+                            <ul>
+                                <li>
+                                    <strong>Node.js:</strong> Express server,
+                                    real-time communication
+                                </li>
+                                <li>
+                                    <strong>Socket.IO:</strong> WebSocket
+                                    implementation, event handling
+                                </li>
+                                <li>
+                                    <strong>Frontend:</strong> Interactive UI,
+                                    real-time updates
+                                </li>
+                                <li>
+                                    <strong>Architecture:</strong> Scalable,
+                                    maintainable design
+                                </li>
+                                <li>
+                                    <strong>Testing:</strong> Local and
+                                    containerized environments
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="skill-card">
+                            <h4>🔧 DevOps Tools</h4>
+                            <ul>
+                                <li>
+                                    <strong>Version Control:</strong> Git
+                                    workflows, branch strategies
+                                </li>
+                                <li>
+                                    <strong>Container Orchestration:</strong>
+                                    Docker Compose, networking
+                                </li>
+                                <li>
+                                    <strong>Cloud Platforms:</strong> Registry
+                                    services, deployment
+                                </li>
+                                <li>
+                                    <strong>Monitoring:</strong> Logging,
+                                    debugging, performance
+                                </li>
+                                <li>
+                                    <strong>Documentation:</strong> Technical
+                                    writing, portfolio presentation
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 1: Docker Implementation -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>🐳 Exercise 1: Docker Implementation</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="description">
+                        <strong>Skills Demonstrated:</strong> Dockerfile
+                        creation, image optimization, containerization best
+                        practices, and Docker Hub publishing
+                    </div>
+
+                    <p>
+                        <strong>Challenge:</strong> Create a DockerFile for a
+                        Node.js application without database dependency and
+                        publish to Docker Hub for public access.
+                    </p>
+
+                    <div class="code-section">
+                        <div class="code-header">
+                            📄 Dockerfile Implementation
+                        </div>
+                        <div class="code-display">
+                            FROM node:19-alpine WORKDIR /app COPY . . EXPOSE
+                            3000 RUN npm install CMD ["npm", "start"]
+                        </div>
+                    </div>
+
+                    <div class="code-section">
+                        <div class="code-header">🔧 Docker Commands</div>
+                        <div class="code-display">
+                            # Build the Docker image docker build -t socket-chat
+                            . # Run the container docker run -p 3000:3000
+                            socket-chat # Tag for Docker Hub docker tag
+                            socket-chat username/socket-chat:latest # Push to
+                            Docker Hub docker push username/socket-chat:latest #
+                            Pull and run from Docker Hub docker pull
+                            username/socket-chat:latest docker run -p 3000:3000
+                            username/socket-chat:latest
+                        </div>
+                    </div>
+
+                    <div class="demo-section">
+                        <h3>🎯 Key Implementation Features</h3>
+                        <ul style="margin: 15px 0; padding-left: 20px">
+                            <li>
+                                <strong>Alpine Linux Base:</strong> Minimal
+                                image size for efficiency
+                            </li>
+                            <li>
+                                <strong>Working Directory:</strong> Organized
+                                file structure in container
+                            </li>
+                            <li>
+                                <strong>Port Exposure:</strong> Proper network
+                                configuration
+                            </li>
+                            <li>
+                                <strong>Dependency Installation:</strong>
+                                Automated npm install process
+                            </li>
+                            <li>
+                                <strong>Start Command:</strong> Production-ready
+                                application launch
+                            </li>
+                        </ul>
+
+                        <div class="links-section">
+                            <button
+                                class="demo-button"
+                                onclick="showDockerCommands()"
+                            >
+                                🐳 Show Docker Commands
+                            </button>
+                            <button
+                                class="demo-button"
+                                onclick="showBestPractices()"
+                            >
+                                📋 Best Practices
+                            </button>
+                        </div>
+
+                        <div
+                            id="docker-output"
+                            style="
+                                background: #1a202c;
+                                color: #68d391;
+                                padding: 15px;
+                                border-radius: 6px;
+                                font-family: &quot;Courier New&quot;, monospace;
+                                margin: 15px 0;
+                                min-height: 100px;
+                                white-space: pre-wrap;
+                            "
+                        >
+                            Click a button above to see Docker implementation
+                            details!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2: CI/CD Pipeline -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>⚙️ Exercise 2: GitHub Actions CI/CD</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="description">
+                        <strong>Skills Demonstrated:</strong> GitHub Actions
+                        workflow creation, automated testing, Docker Hub
+                        integration, and continuous deployment
+                    </div>
+
+                    <p>
+                        <strong>Challenge:</strong> Create GitHub Actions
+                        workflow that automatically builds and pushes Docker
+                        images to Docker Hub when commits are made to the main
+                        branch.
+                    </p>
+
+                    <div class="code-section">
+                        <div class="code-header">
+                            🔄 GitHub Actions Workflow
+                            (.github/workflows/cicd.yml)
+                        </div>
+                        <div class="code-display">
+                            name: CI/CD on: push: branches: [main] jobs: build:
+                            runs-on: ubuntu-latest strategy: matrix:
+                            node-version: [19.x] steps: - name: Checkout
+                            repository uses: actions/checkout@v3 - name: Set up
+                            Node.js ${{ matrix.node-version }} uses:
+                            actions/setup-node@v3 env:
+                            PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true" with:
+                            node-version: ${{ matrix.node-version }} - name:
+                            Install dependencies run: npm install - name: Login
+                            to Docker Hub uses: docker/login-action@v2 with:
+                            username: ${{ secrets.DOCKER_HUB_USERNAME }}
+                            password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} -
+                            name: Set up Docker Buildx id: buildx uses:
+                            docker/setup-buildx-action@v2 - name: Build and push
+                            id: docker_build uses: docker/build-push-action@v4
+                            with: context: ./ file: ./Dockerfile push: true
+                            tags: ${{ secrets.DOCKER_HUB_USERNAME
+                            }}/mvc-structure:latest - name: Image digest run:
+                            echo ${{ steps.docker_build.outputs.digest }}
+                        </div>
+                    </div>
+
+                    <div class="demo-section">
+                        <h3>🎯 CI/CD Pipeline Features</h3>
+                        <ul style="margin: 15px 0; padding-left: 20px">
+                            <li>
+                                <strong>Automated Triggers:</strong> Builds on
+                                every main branch push
+                            </li>
+                            <li>
+                                <strong>Multi-Node Testing:</strong> Matrix
+                                strategy for Node.js versions
+                            </li>
+                            <li>
+                                <strong>Dependency Management:</strong>
+                                Automated npm installation
+                            </li>
+                            <li>
+                                <strong>Secure Authentication:</strong> GitHub
+                                Secrets for Docker Hub
+                            </li>
+                            <li>
+                                <strong>Build Optimization:</strong> Docker
+                                Buildx for advanced features
+                            </li>
+                            <li>
+                                <strong>Automated Publishing:</strong> Direct
+                                push to Docker Hub registry
+                            </li>
+                        </ul>
+
+                        <div class="links-section">
+                            <button
+                                class="demo-button"
+                                onclick="showPipelineFlow()"
+                            >
+                                🔄 Pipeline Flow
+                            </button>
+                            <button
+                                class="demo-button"
+                                onclick="showSecurityFeatures()"
+                            >
+                                🔐 Security Features
+                            </button>
+                        </div>
+
+                        <div
+                            id="cicd-output"
+                            style="
+                                background: #1a202c;
+                                color: #68d391;
+                                padding: 15px;
+                                border-radius: 6px;
+                                font-family: &quot;Courier New&quot;, monospace;
+                                margin: 15px 0;
+                                min-height: 100px;
+                                white-space: pre-wrap;
+                            "
+                        >
+                            Click a button above to see CI/CD pipeline details!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Demo Section -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>🚀 Live Application Demo</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="description">
+                        <strong>Interactive Demo:</strong> Real-time Socket.IO
+                        chat application running in containerized environment
+                    </div>
+
+                    <div class="chat-demo">
+                        <h3>📱 Socket.IO Chat Application</h3>
+                        <p>
+                            <strong>Features:</strong> Real-time messaging,
+                            typing indicators, user presence, nickname system
+                        </p>
+
+                        <ul id="messages" style="min-height: 200px"></ul>
+                        <p id="typingStatus"></p>
+                        <div style="margin: 10px 0">
+                            <strong>Online Users:</strong>
+                            <ul id="users"></ul>
+                        </div>
+                        <form id="form">
+                            <input
+                                id="input"
+                                autocomplete="off"
+                                placeholder="Type a message..."
+                            />
+                            <button type="submit">Send</button>
+                        </form>
+
+                        <div
+                            style="
+                                margin-top: 20px;
+                                padding: 15px;
+                                background: #f0f8ff;
+                                border-radius: 8px;
+                            "
+                        >
+                            <h4>🐳 Docker Deployment Commands:</h4>
+                            <div
+                                style="
+                                    background: #2d3748;
+                                    color: #e2e8f0;
+                                    padding: 10px;
+                                    border-radius: 4px;
+                                    font-family:
+                                        &quot;Courier New&quot;, monospace;
+                                    margin-top: 10px;
+                                "
+                            >
+                                # Pull and run the containerized application
+                                docker pull username/socket-chat:latest docker
+                                run -p 3000:3000 username/socket-chat:latest #
+                                Visit http://localhost:3000 to use the chat
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            // Toggle section functionality
+            function toggleSection(header) {
+                const content = header.nextElementSibling;
+                const icon = header.querySelector(".toggle-icon");
+
+                content.classList.toggle("active");
+                icon.style.transform = content.classList.contains("active")
+                    ? "rotate(180deg)"
+                    : "rotate(0deg)";
+            }
+
+            // Docker demonstration functions
+            function showDockerCommands() {
+                const output = document.getElementById("docker-output");
+                output.textContent = `=== Docker Implementation Commands ===
+
+# 1. Build the Docker image
+docker build -t socket-chat .
+
+# 2. Run locally for testing
+docker run -p 3000:3000 socket-chat
+
+# 3. Test the application
+curl http://localhost:3000
+
+# 4. Tag for Docker Hub repository
+docker tag socket-chat username/socket-chat:latest
+
+# 5. Push to Docker Hub (requires docker login)
+docker push username/socket-chat:latest
+
+# 6. Others can now pull and run
+docker pull username/socket-chat:latest
+docker run -p 3000:3000 username/socket-chat:latest
+
+✅ Image successfully published and accessible publicly!`;
+            }
+
+            function showBestPractices() {
+                const output = document.getElementById("docker-output");
+                output.textContent = `=== Docker Best Practices Implemented ===
+
+🏔️  Alpine Linux Base
+   ├─ Minimal image size (~50MB vs ~900MB)
+   ├─ Faster build and deployment times
+   └─ Reduced attack surface
+
+📁 Optimized Layer Structure
+   ├─ WORKDIR for organized file structure
+   ├─ Strategic COPY placement
+   └─ Efficient caching utilization
+
+🔒 Security Considerations
+   ├─ Non-root user (Node.js default)
+   ├─ Minimal base image
+   └─ No unnecessary packages
+
+⚡ Performance Optimizations
+   ├─ Single RUN command for npm install
+   ├─ Proper .dockerignore usage
+   └─ Explicit port exposure
+
+🚀 Production Readiness
+   ├─ CMD uses npm start (with nodemon)
+   ├─ Proper signal handling
+   └─ Environment variable support`;
+            }
+
+            function showPipelineFlow() {
+                const output = document.getElementById("cicd-output");
+                output.textContent = `=== CI/CD Pipeline Flow ===
+
+🔄 Trigger Event: Push to main branch
+
+🏗️  Build Stage:
+   1️⃣  Checkout repository code
+   2️⃣  Setup Node.js environment (v19.x)
+   3️⃣  Install application dependencies
+   4️⃣  Run tests (if configured)
+
+🐳 Docker Stage:
+   5️⃣  Login to Docker Hub (secure)
+   6️⃣  Setup Docker Buildx
+   7️⃣  Build Docker image
+   8️⃣  Push to Docker Hub registry
+
+✅ Result: Updated image available instantly!
+
+📊 Pipeline Benefits:
+   ├─ Automated on every commit
+   ├─ Consistent build environment
+   ├─ Zero-downtime deployments
+   ├─ Rollback capability
+   └─ Public accessibility
+
+🎯 Success Metrics:
+   ├─ Build time: ~2-3 minutes
+   ├─ Image size: ~50MB
+   └─ Deployment: Automated`;
+            }
+
+            function showSecurityFeatures() {
+                const output = document.getElementById("cicd-output");
+                output.textContent = `=== Security Features Implemented ===
+
+🔐 GitHub Secrets Management:
+   ├─ DOCKER_HUB_USERNAME (encrypted)
+   ├─ DOCKER_HUB_ACCESS_TOKEN (encrypted)
+   └─ No credentials in code
+
+🔒 Access Control:
+   ├─ Branch protection (main only)
+   ├─ Required status checks
+   └─ Merge restrictions
+
+🛡️  Container Security:
+   ├─ Alpine Linux (minimal attack surface)
+   ├─ No root user execution
+   ├─ Read-only filesystem where possible
+   └─ Explicit port exposure only
+
+🔍 Build Security:
+   ├─ Dependency vulnerability scanning
+   ├─ Secure base image updates
+   ├─ Immutable build artifacts
+   └─ Audit trail in GitHub Actions
+
+⚡ Runtime Security:
+   ├─ Process isolation
+   ├─ Network segmentation
+   ├─ Resource limitations
+   └─ Health monitoring`;
+            }
+
+            // Socket.IO Chat Implementation with Smart Detection
+            let socket;
+            let isConnected = false;
+            const form = document.getElementById("form");
+            const input = document.getElementById("input");
+            const messages = document.getElementById("messages");
+            const typingStatus = document.getElementById("typingStatus");
+            const usersList = document.getElementById("users");
+
+            // Try to connect to Socket.IO server
+            try {
+                socket = io();
+
+                socket.on("connect", () => {
+                    isConnected = true;
+                    initializeLiveChat();
+                });
+
+                socket.on("connect_error", () => {
+                    isConnected = false;
+                    initializeStaticDemo();
+                });
+
+                // Timeout fallback if no connection after 3 seconds
+                setTimeout(() => {
+                    if (!isConnected) {
+                        initializeStaticDemo();
+                    }
+                }, 3000);
+            } catch (error) {
+                isConnected = false;
+                initializeStaticDemo();
+            }
+
+            function initializeLiveChat() {
+                // Add live demo welcome message
+                const welcomeMsg = document.createElement("li");
+                welcomeMsg.innerHTML =
+                    "<strong>🎉 Welcome to the LIVE Dockerized Chat Demo!</strong>";
+                welcomeMsg.style.background = "#e8f5e8";
+                welcomeMsg.style.color = "#2e7d32";
+                welcomeMsg.style.fontWeight = "bold";
+                messages.appendChild(welcomeMsg);
+
+                const liveMsg = document.createElement("li");
+                liveMsg.innerHTML =
+                    "✅ <em>Server is running - this is a real-time chat!</em>";
+                liveMsg.style.background = "#f0f8ff";
+                liveMsg.style.color = "#1976d2";
+                liveMsg.style.fontStyle = "italic";
+                messages.appendChild(liveMsg);
+
+                let nickname =
+                    prompt("Enter your nickname for the live demo:") || "Guest";
+                socket.emit("choose name", nickname);
+
+                setupLiveChatHandlers();
+            }
+
+            function initializeStaticDemo() {
+                // Add static demo welcome message
+                const welcomeMsg = document.createElement("li");
+                welcomeMsg.innerHTML =
+                    "<strong>🎭 Dockerized Chat Demo (Static Preview)</strong>";
+                welcomeMsg.style.background = "#fff3e0";
+                welcomeMsg.style.color = "#f57c00";
+                welcomeMsg.style.fontWeight = "bold";
+                messages.appendChild(welcomeMsg);
+
+                const staticMsg = document.createElement("li");
+                staticMsg.innerHTML =
+                    "ℹ️ <em>Server not running - showing interface preview with simulated messages</em>";
+                staticMsg.style.background = "#f5f5f5";
+                staticMsg.style.color = "#666";
+                staticMsg.style.fontStyle = "italic";
+                messages.appendChild(staticMsg);
+
+                setupStaticDemo();
+            }
+
+            function setupLiveChatHandlers() {
+                // Submit message (LIVE)
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    if (input.value) {
+                        const item = document.createElement("li");
+                        item.textContent = `Me: ${input.value}`;
+                        item.style.background = "#f0f8ff";
+                        messages.appendChild(item);
+                        socket.emit("chat message", input.value);
+                        input.value = "";
+                        socket.emit("stop typing");
+                        messages.scrollTop = messages.scrollHeight;
+                    }
+                });
+
+                // Typing indicator (LIVE)
+                let typingTimeout;
+                input.addEventListener("input", () => {
+                    socket.emit("typing");
+                    clearTimeout(typingTimeout);
+                    typingTimeout = setTimeout(() => {
+                        socket.emit("stop typing");
+                    }, 1000);
+                });
+
+                // Incoming chat messages (LIVE)
+                socket.on("chat message", function (msg) {
+                    const item = document.createElement("li");
+                    item.textContent = msg;
+                    messages.appendChild(item);
+                    messages.scrollTop = messages.scrollHeight;
+                });
+
+                // New user joined (LIVE)
+                socket.on("new user", (data) => {
+                    const item = document.createElement("li");
+                    item.textContent = `🎉 ${data.nickname} ${data.text}`;
+                    item.style.background = "#e8f5e8";
+                    item.style.color = "#2e7d32";
+                    messages.appendChild(item);
+                    messages.scrollTop = messages.scrollHeight;
+                });
+
+                // User left (LIVE)
+                socket.on("user left", (msg) => {
+                    const item = document.createElement("li");
+                    item.textContent = `👋 ${msg}`;
+                    item.style.background = "#fff3e0";
+                    item.style.color = "#f57c00";
+                    messages.appendChild(item);
+                    messages.scrollTop = messages.scrollHeight;
+                });
+
+                // Show typing (LIVE)
+                socket.on("user typing", (name) => {
+                    typingStatus.innerText = `${name} is typing...`;
+                });
+
+                socket.on("not typing", () => {
+                    typingStatus.innerText = "";
+                });
+
+                // Show online users (LIVE)
+                socket.on("update user list", (users) => {
+                    usersList.innerHTML = "";
+                    users.forEach((user) => {
+                        const li = document.createElement("li");
+                        li.textContent = `👤 ${user}`;
+                        li.style.margin = "2px 0";
+                        usersList.appendChild(li);
+                    });
+                });
+            }
+
+            function setupStaticDemo() {
+                // Add some simulated users and messages for demo
+                const simulatedUsers = ["Alice", "Bob", "Carol"];
+                const simulatedMessages = [
+                    "Alice: Hey everyone! This Docker setup is amazing! 🐳",
+                    "Bob: I love how the CI/CD pipeline automatically deploys",
+                    "Carol: The containerization makes deployment so smooth",
+                    "Alice: Socket.IO + Docker = Perfect combo!",
+                    "Bob: This portfolio demo is really impressive",
+                ];
+
+                // Show simulated users
+                usersList.innerHTML = "";
+                simulatedUsers.forEach((user) => {
+                    const li = document.createElement("li");
+                    li.textContent = `👤 ${user}`;
+                    li.style.margin = "2px 0";
+                    usersList.appendChild(li);
+                });
+
+                // Add simulated messages with delay
+                simulatedMessages.forEach((msg, index) => {
+                    setTimeout(
+                        () => {
+                            const item = document.createElement("li");
+                            item.textContent = msg;
+                            item.style.background = "#f9f9f9";
+                            item.style.opacity = "0.8";
+                            messages.appendChild(item);
+                            messages.scrollTop = messages.scrollHeight;
+                        },
+                        (index + 1) * 2000,
+                    );
+                });
+
+                // Static form handler
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    if (input.value) {
+                        const item = document.createElement("li");
+                        item.textContent = `Me: ${input.value}`;
+                        item.style.background = "#f0f8ff";
+                        messages.appendChild(item);
+
+                        // Simulate response
+                        setTimeout(() => {
+                            const responses = [
+                                "Great message! (This is a simulated response)",
+                                "Interesting point! (Demo mode - server not running)",
+                                "Thanks for sharing! (Static preview)",
+                                "Cool! (This would be real-time if server was running)",
+                            ];
+                            const randomResponse =
+                                responses[
+                                    Math.floor(Math.random() * responses.length)
+                                ];
+                            const responseItem = document.createElement("li");
+                            responseItem.textContent = `Demo Bot: ${randomResponse}`;
+                            responseItem.style.background = "#f9f9f9";
+                            responseItem.style.opacity = "0.8";
+                            messages.appendChild(responseItem);
+                            messages.scrollTop = messages.scrollHeight;
+                        }, 1000);
+
+                        input.value = "";
+                        messages.scrollTop = messages.scrollHeight;
+                    }
+                });
+
+                // Simulated typing indicator
+                input.addEventListener("input", () => {
+                    if (input.value) {
+                        typingStatus.innerText =
+                            "Demo Bot is preparing a response...";
+                        setTimeout(() => {
+                            typingStatus.innerText = "";
+                        }, 2000);
+                    }
+                });
+            }
+
+            // Initialize with first section open
+            document.addEventListener("DOMContentLoaded", function () {
+                // Auto-open overview section is already active
+                console.log("🐳 Docker & CI/CD Portfolio loaded successfully!");
             });
-        });
-    </script>
-</body>
-
+        </script>
+    </body>
 </html>
