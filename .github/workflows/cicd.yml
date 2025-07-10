@@ -1,11 +1,11 @@
-name: CI/CD
+name: CI/CD with AWS Deployment
 
 on:
   push:
     branches: [main]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -45,3 +45,34 @@ jobs:
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Starting deployment..."
+
+            # Pull latest image
+            docker pull tatoslover/module10lab:latest
+
+            # Stop and remove old container
+            docker stop module10lab-app || true
+            docker rm module10lab-app || true
+
+            # Run new container
+            docker run -d \
+              --name module10lab-app \
+              -p 80:3000 \
+              -p 3000:3000 \
+              -e NODE_ENV=docker \
+              --restart unless-stopped \
+              tatoslover/module10lab:latest
+
+            # Verify deployment
+            sleep 5
+            curl -f http://localhost:3000/health || echo "Health check failed"
+
+            echo "Deployment completed!"

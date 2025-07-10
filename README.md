@@ -78,8 +78,8 @@ docker run -p 3000:3000 module10lab
                         │   AWS EC2       │◀─────────────┘
                         │ (Docker Deploy) │
                         └─────────────────┘
-                                                         
-                        ┌─────────────────┐              
+
+                        ┌─────────────────┐
                         │ Elastic Beanstalk│◀─────────────┘
                         │ (Managed Deploy)│
                         └─────────────────┘
@@ -177,16 +177,3 @@ All deployments use AWS free tier:
 - **Docker Hub**: Image details and pull instructions
 - **GitHub**: Source code and CI/CD workflows
 - **AWS**: Live application demonstrations
-
-## 🏆 **Lab Completion**
-
-✅ **Exercise 1**: Docker implementation and publishing  
-✅ **Exercise 2**: CI/CD pipeline automation  
-✅ **Exercise 3**: AWS EC2 setup and deployment  
-✅ **Exercise 4**: Elastic Beanstalk deployment  
-
-All exercises completed successfully with live demonstrations available for trainer verification.
-
----
-
-**Samuel Love** | [GitHub Repository](https://github.com/tatoslover/Module10Lab) | 2024
