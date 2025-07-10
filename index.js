@@ -6,6 +6,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+// Serve static files (CSS, JS, images, etc.)
+app.use(express.static(__dirname));
+
 // Serve different HTML files based on environment or route
 app.get("/", (req, res) => {
   // Check for environment variable or use default portfolio version
