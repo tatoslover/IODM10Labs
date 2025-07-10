@@ -1,6 +1,18 @@
-version: "3"
+version: "3.8"
 services:
   socket-chat:
     build: .
     ports:
       - "3000:3000"
+    environment:
+      - NODE_ENV=docker
+    container_name: module10lab-chat
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - ./logs:/app/logs

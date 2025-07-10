@@ -1,275 +1,192 @@
-# Lab 10 Part 1 - Docker & CI/CD Portfolio
+# Module 10 Lab - Docker, CI/CD & AWS Deployment
 
-This repository demonstrates comprehensive DevOps engineering skills through the implementation of a Socket.IO chat application with complete containerization and continuous integration/deployment pipeline. The project showcases modern DevOps practices including Docker containerization, GitHub Actions automation, and Docker Hub registry integration.
+A comprehensive DevOps implementation demonstrating Docker containerization, CI/CD automation, and AWS cloud deployment through a real-time Socket.IO chat application.
 
-## Overview
+## 🎯 **Lab Exercises**
 
-Lab 10 Part 1 focuses on containerization and continuous integration/continuous deployment (CI/CD) practices. Students learn to create Docker containers for Node.js applications and implement automated deployment pipelines using GitHub Actions. This first part culminates in a portfolio-ready demonstration that showcases both technical implementation and professional presentation skills.
+### **Exercise 1: Docker Implementation**
+- Create Dockerfile for Node.js application
+- Build and optimize container image
+- Publish to Docker Hub: `docker pull tatoslover/module10lab`
+- **Docker Hub**: https://hub.docker.com/r/tatoslover/module10lab
 
-## Skills Developed
+### **Exercise 2: GitHub Actions CI/CD Pipeline**
+- Automated testing and deployment workflow
+- Docker Hub integration with secure credential management
+- Triggers on main branch commits
+- **GitHub Actions**: https://github.com/tatoslover/Module10Lab/actions
 
-- **Docker Containerization:** Dockerfile creation, image optimization, multi-stage builds
-- **Container Management:** Image building, container orchestration, registry operations
-- **CI/CD Pipelines:** GitHub Actions workflows, automated testing and deployment
-- **DevOps Practices:** Infrastructure as code, automated deployments, version control integration
-- **Cloud Services:** Docker Hub integration, container registry management
-- **Node.js Development:** Express server, Socket.IO real-time communication
-- **Security:** Secret management, secure authentication, container security best practices
-- **Portfolio Development:** Professional presentation, interactive demonstrations
+### **Exercise 3: AWS EC2 Setup & Docker Deployment**
+- Create free-tier EC2 Ubuntu instance (t2.micro)
+- Deploy Docker container to EC2
+- Configure security groups and networking
+- **Live Application**: http://44.211.146.21
+- **Portfolio**: http://44.211.146.21/portfolio
+- **Health Check**: http://44.211.146.21/health
 
-## Exercise 1 - Docker Implementation
-**Files:** `Dockerfile`, `.dockerignore`, `package.json`, `index.js`
+### **Exercise 4: AWS Elastic Beanstalk Deployment**
+- Deploy Node.js application to Elastic Beanstalk
+- Managed platform with auto-scaling
+- **Live Application**: http://beanstalkdemo-env.eba-6hpbm22d.us-east-1.elasticbeanstalk.com
 
-**What it showcases:** Complete Docker containerization of a Node.js application without database dependencies
+## 🚀 **Quick Start**
 
-### Challenge:
-Create your own DockerFile for your Node.js application (without reliance on a DB) and create a running image of your application. Provide your public Docker Hub image link to the trainer so they can run your application using your docker image.
-
-### Implementation Features:
-- **Alpine Linux Base:** Minimal image size for efficiency (~50MB vs ~900MB)
-- **Optimized Layer Structure:** Strategic COPY placement and efficient caching
-- **Security Considerations:** Non-root user execution, minimal attack surface
-- **Production Ready:** Proper port exposure, environment variable support
-
-### Docker Commands:
+### **Local Development**
 ```bash
-# Build the Docker image
-docker build -t socket-chat .
-
-# Run locally for testing
-docker run -p 3000:3000 socket-chat
-
-# Tag for Docker Hub repository
-docker tag socket-chat username/dockerdemo:latest
-
-# Push to Docker Hub
-docker push username/dockerdemo:latest
-
-# Pull and run from Docker Hub
-docker pull username/dockerdemo:latest
-docker run -p 3000:3000 username/dockerdemo:latest
-```
-
-### Dockerfile Implementation:
-```dockerfile
-FROM node:19-alpine
-WORKDIR /app
-COPY . .
-EXPOSE 3000
-RUN npm install
-CMD ["npm", "start"]
-```
-
----
-
-## Exercise 2 - GitHub Actions CI/CD Pipeline
-**File:** `.github/workflows/cicd.yml`
-
-**What it showcases:** Automated continuous integration and deployment pipeline with Docker Hub integration
-
-### Challenge:
-Create your own GitHub Actions for your Node.js application and create a running CI/CD pipeline for your application that updates your Docker Hub image automatically when new commits are made.
-
-### Pipeline Features:
-- **Automated Triggers:** Builds on every main branch push
-- **Multi-Node Testing:** Matrix strategy for Node.js versions
-- **Dependency Management:** Automated npm installation and caching
-- **Secure Authentication:** GitHub Secrets for Docker Hub credentials
-- **Build Optimization:** Docker Buildx for advanced building features
-- **Automated Publishing:** Direct push to Docker Hub registry
-
-### Workflow Implementation:
-```yaml
-name: CI/CD
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [19.x]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: ./
-          file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/dockerdemo:latest
-```
-
-### Security Features:
-- **GitHub Secrets Management:** Encrypted credential storage
-- **Access Control:** Branch protection and merge restrictions
-- **Container Security:** Alpine Linux, minimal attack surface
-- **Build Security:** Dependency vulnerability scanning, audit trails
-
----
-
-## Application Architecture
-**Files:** `index.js`, `index.html`, `package.json`
-
-**What it showcases:** Real-time web application with Socket.IO, Express server, and interactive frontend
-
-### Technical Stack:
-- **Backend:** Node.js with Express framework
-- **Real-time Communication:** Socket.IO for WebSocket connections
-- **Frontend:** Vanilla JavaScript with responsive design
-- **Containerization:** Docker with Alpine Linux base
-- **Deployment:** Automated CI/CD with GitHub Actions
-
-### Application Features:
-- **Real-time Messaging:** Instant chat functionality
-- **User Presence:** Online user tracking and notifications
-- **Typing Indicators:** Live typing status updates
-- **Responsive Design:** Mobile-friendly interface
-- **Smart Fallback:** Static demo when server unavailable
-
-### Socket.IO Implementation:
-```javascript
-// Server-side event handling
-io.on("connection", (socket) => {
-  console.log("A user connected");
-  
-  socket.on("choose name", (nickname) => {
-    users[socket.id] = nickname;
-    socket.broadcast.emit("new user", {
-      nickname: nickname,
-      text: "has joined the chat"
-    });
-  });
-  
-  socket.on("chat message", (msg) => {
-    const sender = users[socket.id] || "Unknown";
-    socket.broadcast.emit("chat message", `${sender}: ${msg}`);
-  });
-});
-```
-
----
-
-## Portfolio Presentation
-**File:** `index.html`
-
-**What it showcases:** Professional portfolio presentation with interactive demonstrations
-
-### Portfolio Features:
-- **Professional Design:** IOD and Docker branding, responsive layout
-- **Interactive Sections:** Collapsible content areas with smooth animations
-- **Code Demonstrations:** Syntax-highlighted code examples
-- **Live Application Demo:** Functional chat application with smart fallback
-- **Skills Showcase:** Comprehensive DevOps and development skills grid
-- **External Links:** GitHub repository and Docker Hub image links
-
-### Smart Demo System:
-The portfolio includes an intelligent demonstration system that:
-- **Detects Server Status:** Automatically determines if Socket.IO server is running
-- **Live Mode:** Full real-time chat when server is available
-- **Static Mode:** Simulated chat experience with demo responses
-- **Graceful Fallback:** Professional presentation regardless of server status
-
----
-
-## Getting Started
-
-### Prerequisites:
-- Node.js (v19.x)
-- Docker Desktop
-- GitHub account
-- Docker Hub account
-
-### Local Development:
-```bash
-# Clone the repository
-git clone https://github.com/tatoslover/dockerdemo.git
-cd dockerdemo
+# Clone repository
+git clone https://github.com/tatoslover/Module10Lab.git
+cd Module10Lab
 
 # Install dependencies
 npm install
 
-# Run the application
+# Run application
 npm start
-
 # Visit http://localhost:3000
 ```
 
-### Docker Deployment:
+### **Docker Deployment**
 ```bash
-# Build and run with Docker
-docker build -t dockerdemo .
-docker run -p 3000:3000 dockerdemo
+# Pull and run from Docker Hub
+docker pull tatoslover/module10lab
+docker run -p 3000:3000 tatoslover/module10lab
 
-# Or pull from Docker Hub
-docker pull username/dockerdemo:latest
-docker run -p 3000:3000 username/dockerdemo:latest
+# Or build locally
+docker build -t module10lab .
+docker run -p 3000:3000 module10lab
 ```
 
-### CI/CD Setup:
-1. Fork this repository
-2. Set up GitHub Secrets:
-   - `DOCKER_HUB_USERNAME`
-   - `DOCKER_HUB_ACCESS_TOKEN`
-3. Push to main branch to trigger deployment
+## 🛠️ **Technical Stack**
+
+- **Backend**: Node.js, Express.js
+- **Real-time**: Socket.IO WebSocket communication
+- **Frontend**: Vanilla JavaScript, responsive design
+- **Containerization**: Docker with Alpine Linux
+- **CI/CD**: GitHub Actions
+- **Cloud**: AWS EC2, Elastic Beanstalk
+- **Registry**: Docker Hub
+
+## 🏗️ **Architecture**
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   GitHub Repo   │───▶│  GitHub Actions  │───▶│   Docker Hub    │
+│   (Source Code) │    │   (CI/CD Build)  │    │  (Image Store)  │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                                         │
+                        ┌─────────────────┐              │
+                        │   AWS EC2       │◀─────────────┘
+                        │ (Docker Deploy) │
+                        └─────────────────┘
+                                                         
+                        ┌─────────────────┐              
+                        │ Elastic Beanstalk│◀─────────────┘
+                        │ (Managed Deploy)│
+                        └─────────────────┘
+```
+
+## 📁 **Project Structure**
+
+```
+Module10Lab/
+├── .github/workflows/
+│   └── ci-cd.yml              # GitHub Actions workflow
+├── beanstalk-app/             # Elastic Beanstalk deployment
+├── Dockerfile                 # Container configuration
+├── docker-compose.yml         # Multi-container setup
+├── index.js                   # Express server with Socket.IO
+├── index.html                 # Portfolio interface
+├── index-docker.html          # Docker-optimized interface
+├── healthcheck.js             # Health monitoring
+├── package.json               # Dependencies and scripts
+└── README.md                  # This file
+```
+
+## 🔧 **Key Features**
+
+### **Docker Implementation**
+- Multi-stage builds for optimization
+- Alpine Linux base (minimal size)
+- Health checks and monitoring
+- Production-ready configuration
+
+### **CI/CD Pipeline**
+- Automated testing on push
+- Docker image building and publishing
+- Secure credential management
+- Multi-environment support
+
+### **AWS Deployment**
+- EC2 free-tier instance setup
+- Docker container orchestration
+- Security groups and networking
+- Elastic Beanstalk managed hosting
+
+### **Application Features**
+- Real-time chat with Socket.IO
+- User presence and typing indicators
+- Responsive design
+- Health monitoring endpoints
+- Smart fallback for offline mode
+
+## 🌐 **Live Demos**
+
+| Platform | URL | Description |
+|----------|-----|-------------|
+| **EC2** | http://44.211.146.21 | Main application |
+| **EC2 Portfolio** | http://44.211.146.21/portfolio | Portfolio demo |
+| **Health Check** | http://44.211.146.21/health | Status monitoring |
+| **Elastic Beanstalk** | http://beanstalkdemo-env.eba-6hpbm22d.us-east-1.elasticbeanstalk.com | Managed deployment |
+
+## 🎓 **Skills Demonstrated**
+
+- **Docker**: Containerization, image optimization, registry management
+- **CI/CD**: Automated pipelines, testing, deployment automation
+- **AWS**: EC2 setup, container deployment, Elastic Beanstalk
+- **DevOps**: Infrastructure as code, monitoring, security
+- **Node.js**: Server development, real-time applications
+- **Frontend**: Responsive design, WebSocket integration
+
+## 🔐 **Security & Best Practices**
+
+- Non-root Docker container execution
+- GitHub Secrets for credential management
+- AWS security groups and IAM roles
+- Health check endpoints for monitoring
+- Minimal attack surface with Alpine Linux
+
+## 💰 **Cost Management**
+
+All deployments use AWS free tier:
+- **EC2**: t2.micro instance (750 hours/month)
+- **Elastic Beanstalk**: Single instance deployment
+- **Storage**: 8GB EBS (within 30GB limit)
+- **Monitoring**: Basic health checks included
+
+## 🚀 **Getting Started**
+
+1. **Clone the repository**
+2. **Set up Docker Hub account**
+3. **Configure AWS free tier account**
+4. **Follow exercise instructions in portfolio**
+5. **Deploy and test applications**
+
+## 📚 **Documentation**
+
+- **Portfolio**: Comprehensive lab documentation at http://44.211.146.21/portfolio
+- **Docker Hub**: Image details and pull instructions
+- **GitHub**: Source code and CI/CD workflows
+- **AWS**: Live application demonstrations
+
+## 🏆 **Lab Completion**
+
+✅ **Exercise 1**: Docker implementation and publishing  
+✅ **Exercise 2**: CI/CD pipeline automation  
+✅ **Exercise 3**: AWS EC2 setup and deployment  
+✅ **Exercise 4**: Elastic Beanstalk deployment  
+
+All exercises completed successfully with live demonstrations available for trainer verification.
 
 ---
 
-## Project Structure
-```
-dockerdemo/
-├── .github/
-│   └── workflows/
-│       └── cicd.yml          # GitHub Actions workflow
-├── node_modules/             # Dependencies (auto-generated)
-├── .dockerignore            # Docker ignore file
-├── .gitignore              # Git ignore file
-├── Dockerfile              # Container configuration
-├── index.html              # Portfolio and chat interface
-├── index.js                # Express server with Socket.IO
-├── package.json            # Node.js dependencies
-├── package-lock.json       # Dependency lock file
-└── README.md              # This documentation
-```
-
----
-
-## Live Demo
-
-**Portfolio:** [GitHub Pages](https://tatoslover.github.io/dockerdemo/)
-**Docker Image:** [Docker Hub](https://hub.docker.com/repository/docker/tatoslover/dockerdemo/general)
-**Source Code:** [GitHub Repository](https://github.com/tatoslover/dockerdemo)
-
----
-
-## Learning Outcomes
-
-Upon completion of Lab 10 Part 1, students will have demonstrated:
-
-1. **Docker Proficiency:** Container creation, optimization, and deployment
-2. **CI/CD Implementation:** Automated pipeline development and maintenance
-3. **DevOps Practices:** Infrastructure as code, automated deployments
-4. **Security Awareness:** Secret management, container security
-5. **Professional Presentation:** Portfolio development and technical communication
-6. **Real-world Application:** Production-ready deployment strategies
-
-This lab part provides hands-on experience with modern DevOps tools and practices essential for contemporary software development and deployment workflows.
+**Samuel Love** | [GitHub Repository](https://github.com/tatoslover/Module10Lab) | 2024

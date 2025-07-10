@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Docker & CI/CD Portfolio - Samuel Love</title>
+        <title>Module 10 Lab Portfolio - Samuel Love</title>
         <style>
             * {
                 margin: 0;
@@ -15,19 +15,17 @@
                 font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
                 line-height: 1.6;
                 color: #333;
-                background: linear-gradient(
-                    135deg,
-                    #0f4c75 0%,
-                    #3282b8 50%,
-                    #bbe1fa 100%
-                );
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 min-height: 100vh;
             }
 
             .container {
                 max-width: 1200px;
-                margin: 0 auto;
+                margin: 20px auto;
                 padding: 20px;
+                background: transparent;
+                border-radius: 10px;
+                box-shadow: none;
             }
 
             .header {
@@ -35,6 +33,7 @@
                 color: white;
                 margin-bottom: 40px;
                 padding: 40px 0;
+                background: transparent;
             }
 
             .header h1 {
@@ -56,7 +55,7 @@
             }
 
             .section {
-                background: white;
+                background: rgba(255, 255, 255, 0.95);
                 margin-bottom: 30px;
                 border-radius: 15px;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -69,7 +68,7 @@
             }
 
             .section-header {
-                background: linear-gradient(45deg, #0f4c75, #3282b8);
+                background: linear-gradient(45deg, #e67e22, #d35400);
                 color: white;
                 padding: 20px;
                 cursor: pointer;
@@ -97,11 +96,11 @@
             }
 
             .description {
-                background: #f8f9fa;
+                background: rgba(230, 126, 34, 0.1);
                 padding: 15px;
                 border-radius: 8px;
                 margin-bottom: 20px;
-                border-left: 4px solid #3282b8;
+                border-left: 4px solid #e67e22;
             }
 
             .code-section {
@@ -142,7 +141,7 @@
             }
 
             .demo-button {
-                background: linear-gradient(45deg, #0f4c75, #3282b8);
+                background: linear-gradient(45deg, #e67e22, #d35400);
                 color: white;
                 padding: 10px 20px;
                 border: none;
@@ -155,16 +154,9 @@
             }
 
             .demo-button:hover {
-                background: linear-gradient(45deg, #3282b8, #0f4c75);
+                background: linear-gradient(45deg, #d35400, #e67e22);
                 transform: translateY(-2px);
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            }
-
-            .demo-button:disabled {
-                background: #ccc;
-                cursor: not-allowed;
-                transform: none;
-                box-shadow: none;
             }
 
             .links-section {
@@ -176,28 +168,28 @@
 
             .link-button {
                 display: inline-block;
-                background: linear-gradient(45deg, #24292e, #444d56);
+                background: linear-gradient(45deg, #e67e22, #d35400);
                 color: white;
                 padding: 12px 24px;
                 text-decoration: none;
-                border-radius: 8px;
+                border-radius: 6px;
                 font-weight: bold;
                 transition: all 0.3s ease;
-                border: 2px solid transparent;
+                margin: 5px;
             }
 
             .link-button:hover {
-                background: linear-gradient(45deg, #444d56, #24292e);
+                background: linear-gradient(45deg, #d35400, #e67e22);
                 transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             }
 
-            .docker-link {
-                background: linear-gradient(45deg, #2496ed, #1e88e5);
+            .aws-section {
+                background: linear-gradient(45deg, #ff9500, #ff7b00);
             }
 
-            .docker-link:hover {
-                background: linear-gradient(45deg, #1e88e5, #2496ed);
+            .aws-section:hover {
+                background: linear-gradient(45deg, #ff7b00, #ff9500);
             }
 
             .skills-grid {
@@ -215,9 +207,8 @@
             }
 
             .skill-card h4 {
-                color: #3282b8;
+                color: #e67e22;
                 margin-bottom: 15px;
-                font-size: 1.1em;
             }
 
             .skill-card ul {
@@ -234,68 +225,51 @@
 
             .skill-card li::before {
                 content: "▸";
-                color: #3282b8;
+                color: #e67e22;
                 position: absolute;
                 left: 0;
                 top: 0;
+                font-weight: bold;
             }
 
-            .chat-demo {
-                background: white;
+            .completion-status {
+                display: inline-block;
+                padding: 5px 10px;
+                border-radius: 20px;
+                font-size: 0.8em;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+
+            .completed {
+                background: #d4edda;
+                color: #155724;
+            }
+
+            .in-progress {
+                background: #fff3cd;
+                color: #856404;
+            }
+
+            .requirements-list {
+                background: #f8f9fa;
+                padding: 15px;
                 border-radius: 8px;
-                padding: 20px;
-                margin: 20px 0;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                margin: 15px 0;
             }
 
-            #messages {
-                list-style-type: none;
-                padding: 0;
-                max-height: 300px;
-                overflow-y: auto;
-                border: 1px solid #ddd;
-                border-radius: 4px;
+            .requirements-list h4 {
+                color: #495057;
                 margin-bottom: 10px;
-                background: #f9f9f9;
             }
 
-            #messages > li {
-                padding: 8px 12px;
-                border-bottom: 1px solid #eee;
+            .requirements-list ul {
+                margin: 0;
+                padding-left: 20px;
             }
 
-            #form {
-                display: flex;
-                gap: 10px;
-            }
-
-            #input {
-                flex-grow: 1;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-            }
-
-            #form > button {
-                padding: 10px 20px;
-                background: #3282b8;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-
-            #typingStatus {
-                font-style: italic;
-                color: gray;
+            .requirements-list li {
                 margin: 5px 0;
-            }
-
-            #users {
-                margin-top: 10px;
-                background: #f0f8ff;
-                padding: 10px;
-                border-radius: 4px;
             }
 
             @media (max-width: 768px) {
@@ -310,198 +284,141 @@
                 .skills-grid {
                     grid-template-columns: 1fr;
                 }
+
+                .links-section {
+                    flex-direction: column;
+                }
             }
         </style>
     </head>
     <body>
-        <div class="container">
-            <div class="header">
-                <h1>
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG3HuBlAUw3Wu-46hoogyANMHo1VC-tKnE1Q&s"
-                        alt="IOD Logo"
-                        style="
-                            width: 60px;
-                            height: 60px;
-                            border-radius: 50%;
-                            vertical-align: middle;
-                            margin-right: 15px;
-                        "
-                    />
-                    Docker & CI/CD Portfolio
-                    <img
-                        src="https://www.docker.com/wp-content/uploads/2022/03/vertical-logo-monochromatic.png"
-                        alt="Docker Logo"
-                        style="
-                            width: 60px;
-                            height: 60px;
-                            vertical-align: middle;
-                            margin-left: 15px;
-                            filter: brightness(0) invert(1);
-                        "
-                    />
-                </h1>
-                <h2>Samuel Love</h2>
-                <p>
-                    DevOps Engineering: Containerization & Continuous
-                    Integration
-                </p>
-            </div>
+        <div class="header">
+            <h1>
+                <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG3HuBlAUw3Wu-46hoogyANMHo1VC-tKnE1Q&s"
+                    alt="IOD Logo"
+                    style="
+                        width: 60px;
+                        height: 60px;
+                        border-radius: 50%;
+                        vertical-align: middle;
+                        margin-right: 15px;
+                    "
+                />
+                Module 10 Lab Portfolio
+                <img
+                    src="https://logos-world.net/wp-content/uploads/2021/02/Docker-Logo.png"
+                    alt="Docker Logo"
+                    style="
+                        width: 80px;
+                        height: 50px;
+                        vertical-align: middle;
+                        margin-left: 15px;
+                        filter: brightness(0) invert(1);
+                    "
+                />
+            </h1>
+            <h2>Samuel Love</h2>
+            <p>DevOps Engineering: Docker, CI/CD & AWS Cloud Deployment</p>
+        </div>
 
-            <!-- Overview Section -->
+        <div class="container">
+            <!-- Lab Overview Section -->
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
-                    <h2>📚 Project Overview</h2>
+                    <h2>📚 Module 10 Lab Overview</h2>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div class="section-content active">
                     <div class="description">
                         <strong>Complete DevOps Implementation:</strong>
-                        Real-time chat application with Docker containerization
-                        and automated CI/CD pipeline
+                        Five comprehensive exercises covering Docker
+                        containerization, CI/CD automation, and AWS cloud
+                        deployment strategies.
                     </div>
                     <p>
-                        This project demonstrates comprehensive DevOps
+                        This portfolio demonstrates comprehensive DevOps
                         engineering skills through the implementation of a
                         Socket.IO chat application with complete
                         containerization and continuous integration/deployment
                         pipeline. The application showcases modern DevOps
                         practices including Docker containerization, GitHub
-                        Actions automation, and Docker Hub registry integration.
+                        Actions automation, and AWS cloud deployment across
+                        multiple platforms.
                     </p>
 
-                    <div class="links-section">
-                        <a
-                            href="https://github.com/tatoslover/dockerdemo"
-                            target="_blank"
-                            class="link-button"
-                        >
-                            🌟 View on GitHub
-                        </a>
-                        <a
-                            href="https://hub.docker.com/repository/docker/tatoslover/dockerdemo/general"
-                            target="_blank"
-                            class="link-button docker-link"
-                        >
-                            🐳 Docker Hub Image
-                        </a>
+                    <div class="description">
+                        <h4>🌟 Complete Implementation & Documentation</h4>
+                        <p>The GitHub repository contains:</p>
+                        <ul>
+                            <li>
+                                <strong>5/5 Exercises Completed:</strong> All
+                                lab requirements fulfilled successfully
+                            </li>
+                            <li>
+                                <strong>Public Applications:</strong> Multiple
+                                deployment strategies demonstrated
+                            </li>
+                            <li>
+                                <strong>Best Practices:</strong> Security,
+                                performance, and scalability implemented
+                            </li>
+                            <li>
+                                <strong>Documentation:</strong> Comprehensive
+                                technical documentation provided
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Skills Section -->
+            <!-- Skills & Tools Section -->
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
-                    <h2>🛠️ DevOps Skills Demonstrated</h2>
+                    <h2>🛠️ Skills Developed & Tools Mastered</h2>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="skills-grid">
                         <div class="skill-card">
-                            <h4>🐳 Docker Containerization</h4>
+                            <h4>🐳 Docker Mastery</h4>
                             <ul>
+                                <li>✅ Dockerfile creation and optimization</li>
                                 <li>
-                                    <strong>Dockerfile Creation:</strong>
-                                    Multi-stage builds, optimization
+                                    ✅ Image management and registry publishing
                                 </li>
                                 <li>
-                                    <strong>Image Management:</strong> Layering,
-                                    caching strategies
+                                    ✅ Container orchestration and networking
                                 </li>
-                                <li>
-                                    <strong>Container Configuration:</strong>
-                                    Port mapping, volume management
-                                </li>
-                                <li>
-                                    <strong>Registry Integration:</strong>
-                                    Docker Hub automation
-                                </li>
-                                <li>
-                                    <strong>Best Practices:</strong> Security,
-                                    efficiency, maintainability
-                                </li>
+                                <li>✅ Production deployment strategies</li>
+                                <li>✅ Security best practices</li>
                             </ul>
                         </div>
                         <div class="skill-card">
-                            <h4>⚙️ CI/CD Pipeline</h4>
+                            <h4>⚙️ CI/CD Automation</h4>
                             <ul>
-                                <li>
-                                    <strong>GitHub Actions:</strong> Workflow
-                                    automation, triggers
-                                </li>
-                                <li>
-                                    <strong>Build Automation:</strong>
-                                    Multi-environment testing
-                                </li>
-                                <li>
-                                    <strong>Deployment Pipeline:</strong>
-                                    Automated image updates
-                                </li>
-                                <li>
-                                    <strong>Secret Management:</strong> Secure
-                                    credential handling
-                                </li>
-                                <li>
-                                    <strong>Version Control:</strong>
-                                    Branch-based deployments
-                                </li>
+                                <li>✅ GitHub Actions workflow development</li>
+                                <li>✅ Automated testing and deployment</li>
+                                <li>✅ Docker Hub integration</li>
+                                <li>✅ Pipeline security and optimization</li>
+                                <li>✅ Multi-platform builds</li>
                             </ul>
                         </div>
                         <div class="skill-card">
-                            <h4>🚀 Application Development</h4>
+                            <h4>☁️ AWS Cloud Deployment</h4>
                             <ul>
-                                <li>
-                                    <strong>Node.js:</strong> Express server,
-                                    real-time communication
-                                </li>
-                                <li>
-                                    <strong>Socket.IO:</strong> WebSocket
-                                    implementation, event handling
-                                </li>
-                                <li>
-                                    <strong>Frontend:</strong> Interactive UI,
-                                    real-time updates
-                                </li>
-                                <li>
-                                    <strong>Architecture:</strong> Scalable,
-                                    maintainable design
-                                </li>
-                                <li>
-                                    <strong>Testing:</strong> Local and
-                                    containerized environments
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="skill-card">
-                            <h4>🔧 DevOps Tools</h4>
-                            <ul>
-                                <li>
-                                    <strong>Version Control:</strong> Git
-                                    workflows, branch strategies
-                                </li>
-                                <li>
-                                    <strong>Container Orchestration:</strong>
-                                    Docker Compose, networking
-                                </li>
-                                <li>
-                                    <strong>Cloud Platforms:</strong> Registry
-                                    services, deployment
-                                </li>
-                                <li>
-                                    <strong>Monitoring:</strong> Logging,
-                                    debugging, performance
-                                </li>
-                                <li>
-                                    <strong>Documentation:</strong> Technical
-                                    writing, portfolio presentation
-                                </li>
+                                <li>✅ EC2 instance configuration</li>
+                                <li>✅ Docker deployment on AWS</li>
+                                <li>✅ Elastic Beanstalk applications</li>
+                                <li>✅ Security groups and networking</li>
+                                <li>✅ Cloud infrastructure management</li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Exercise 1: Docker Implementation -->
+            <!-- Exercise 1a: Docker Implementation -->
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
                     <h2>🐳 Exercise 1: Docker Implementation</h2>
@@ -509,146 +426,140 @@
                 </div>
                 <div class="section-content">
                     <div class="description">
-                        <strong>Skills Demonstrated:</strong> Dockerfile
-                        creation, image optimization, containerization best
-                        practices, and Docker Hub publishing
-                    </div>
-
-                    <p>
-                        <strong>Challenge:</strong> Create a DockerFile for a
-                        Node.js application without database dependency and
+                        <strong>Objective:</strong> Create a Dockerfile for a
+                        Node.js application without database dependencies and
                         publish to Docker Hub for public access.
-                    </p>
-
-                    <div class="code-section">
-                        <div class="code-header">
-                            📄 Dockerfile Implementation
-                        </div>
-                        <div class="code-display">
-                            FROM node:19-alpine WORKDIR /app COPY . . EXPOSE
-                            3000 RUN npm install CMD ["npm", "start"]
-                        </div>
                     </div>
 
-                    <div class="code-section">
-                        <div class="code-header">🔧 Docker Commands</div>
-                        <div class="code-display">
-                            # Build the Docker image docker build -t socket-chat
-                            . # Run the container docker run -p 3000:3000
-                            socket-chat # Tag for Docker Hub docker tag
-                            socket-chat username/socket-chat:latest # Push to
-                            Docker Hub docker push username/socket-chat:latest #
-                            Pull and run from Docker Hub docker pull
-                            username/socket-chat:latest docker run -p 3000:3000
-                            username/socket-chat:latest
-                        </div>
+                    <div class="requirements-list">
+                        <h4>📋 Requirements:</h4>
+                        <ul>
+                            <li>
+                                Create optimized Dockerfile for Node.js
+                                application
+                            </li>
+                            <li>Build and test Docker image locally</li>
+                            <li>Publish image to Docker Hub public registry</li>
+                            <li>
+                                Provide public Docker Hub link for trainer
+                                access
+                            </li>
+                            <li>
+                                Ensure application runs without database
+                                dependencies
+                            </li>
+                        </ul>
                     </div>
 
                     <div class="demo-section">
-                        <h3>🎯 Key Implementation Features</h3>
+                        <h3>🐳 Public Docker Hub Access</h3>
+                        <p>
+                            The Docker image has been published to Docker Hub
+                            for easy access. Use the links below to pull and run
+                            the application:
+                        </p>
                         <ul style="margin: 15px 0; padding-left: 20px">
                             <li>
-                                <strong>Alpine Linux Base:</strong> Minimal
-                                image size for efficiency
+                                <strong>Pull Command:</strong> Downloads the
+                                image to your local machine (docker pull
+                                tatoslover/module10lab)
                             </li>
                             <li>
-                                <strong>Working Directory:</strong> Organized
-                                file structure in container
+                                <strong>Run Command:</strong> Starts the
+                                container on port 3000 (docker run -p 3000:3000
+                                tatoslover/module10lab)
                             </li>
                             <li>
-                                <strong>Port Exposure:</strong> Proper network
-                                configuration
-                            </li>
-                            <li>
-                                <strong>Dependency Installation:</strong>
-                                Automated npm install process
-                            </li>
-                            <li>
-                                <strong>Start Command:</strong> Production-ready
-                                application launch
+                                <strong>Access:</strong> Visit
+                                http://localhost:3000 to use the application
                             </li>
                         </ul>
+                    </div>
 
-                        <div class="links-section">
-                            <button
-                                class="demo-button"
-                                onclick="showDockerCommands()"
-                            >
-                                🐳 Show Docker Commands
-                            </button>
-                            <button
-                                class="demo-button"
-                                onclick="showBestPractices()"
-                            >
-                                📋 Best Practices
-                            </button>
-                        </div>
-
-                        <div
-                            id="docker-output"
-                            style="
-                                background: #1a202c;
-                                color: #68d391;
-                                padding: 15px;
-                                border-radius: 6px;
-                                font-family: &quot;Courier New&quot;, monospace;
-                                margin: 15px 0;
-                                min-height: 100px;
-                                white-space: pre-wrap;
-                            "
+                    <div class="links-section">
+                        <a
+                            href="https://hub.docker.com/r/tatoslover/module10lab"
+                            target="_blank"
+                            class="link-button"
                         >
-                            Click a button above to see Docker implementation
-                            details!
-                        </div>
+                            🐳 Docker Hub Repository
+                        </a>
+                        <a
+                            href="docker://tatoslover/module10lab"
+                            class="link-button"
+                            onclick="navigator.clipboard.writeText('docker pull tatoslover/module10lab'); alert('Pull command copied to clipboard!');"
+                        >
+                            📥 Copy Pull Command
+                        </a>
+                        <a
+                            href="javascript:void(0)"
+                            class="link-button"
+                            onclick="navigator.clipboard.writeText('docker run -p 3000:3000 tatoslover/module10lab'); alert('Run command copied to clipboard!');"
+                        >
+                            🚀 Copy Run Command
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Exercise 2: CI/CD Pipeline -->
+            <!-- Exercise 2: GitHub Actions CI/CD -->
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
-                    <h2>⚙️ Exercise 2: GitHub Actions CI/CD</h2>
+                    <h2>⚙️ Exercise 2: GitHub Actions CI/CD Pipeline</h2>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="description">
-                        <strong>Skills Demonstrated:</strong> GitHub Actions
-                        workflow creation, automated testing, Docker Hub
-                        integration, and continuous deployment
+                        <strong>Objective:</strong> Create GitHub Actions
+                        workflow that automatically builds and pushes Docker
+                        images to Docker Hub when commits are made.
                     </div>
 
-                    <p>
-                        <strong>Challenge:</strong> Create GitHub Actions
-                        workflow that automatically builds and pushes Docker
-                        images to Docker Hub when commits are made to the main
-                        branch.
-                    </p>
+                    <div class="requirements-list">
+                        <h4>📋 Requirements:</h4>
+                        <ul>
+                            <li>Create GitHub Actions workflow file</li>
+                            <li>Automate Docker image building on push</li>
+                            <li>
+                                Integrate with Docker Hub for automatic
+                                publishing
+                            </li>
+                            <li>Include testing and validation steps</li>
+                            <li>
+                                Secure credential management with GitHub Secrets
+                            </li>
+                        </ul>
+                    </div>
 
                     <div class="code-section">
                         <div class="code-header">
                             🔄 GitHub Actions Workflow
-                            (.github/workflows/cicd.yml)
+                            (.github/workflows/ci-cd.yml)
                         </div>
                         <div class="code-display">
-                            name: CI/CD on: push: branches: [main] jobs: build:
-                            runs-on: ubuntu-latest strategy: matrix:
-                            node-version: [19.x] steps: - name: Checkout
-                            repository uses: actions/checkout@v3 - name: Set up
+                            name: CI/CD Pipeline on: push: branches: [ main,
+                            develop ] pull_request: branches: [ main ] jobs:
+                            test: runs-on: ubuntu-latest strategy: matrix:
+                            node-version: [18.x, 19.x] steps: - name: Checkout
+                            repository uses: actions/checkout@v3 - name: Setup
                             Node.js ${{ matrix.node-version }} uses:
-                            actions/setup-node@v3 env:
-                            PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true" with:
-                            node-version: ${{ matrix.node-version }} - name:
-                            Install dependencies run: npm install - name: Login
-                            to Docker Hub uses: docker/login-action@v2 with:
+                            actions/setup-node@v3 with: node-version: ${{
+                            matrix.node-version }} cache: 'npm' - name: Install
+                            dependencies run: npm ci - name: Run tests run: npm
+                            test - name: Run linting run: npm run lint
+                            build-and-deploy: needs: test runs-on: ubuntu-latest
+                            if: github.ref == 'refs/heads/main' steps: - name:
+                            Checkout repository uses: actions/checkout@v3 -
+                            name: Setup Docker Buildx uses:
+                            docker/setup-buildx-action@v2 - name: Login to
+                            Docker Hub uses: docker/login-action@v2 with:
                             username: ${{ secrets.DOCKER_HUB_USERNAME }}
                             password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} -
-                            name: Set up Docker Buildx id: buildx uses:
-                            docker/setup-buildx-action@v2 - name: Build and push
-                            id: docker_build uses: docker/build-push-action@v4
-                            with: context: ./ file: ./Dockerfile push: true
-                            tags: ${{ secrets.DOCKER_HUB_USERNAME
-                            }}/mvc-structure:latest - name: Image digest run:
-                            echo ${{ steps.docker_build.outputs.digest }}
+                            name: Build and push Docker image uses:
+                            docker/build-push-action@v4 with: context: . push:
+                            true tags: | tatoslover/socketio-chat:latest
+                            tatoslover/socketio-chat:${{ github.sha }}
+                            cache-from: type=gha cache-to: type=gha,mode=max
                         </div>
                     </div>
 
@@ -656,131 +567,260 @@
                         <h3>🎯 CI/CD Pipeline Features</h3>
                         <ul style="margin: 15px 0; padding-left: 20px">
                             <li>
-                                <strong>Automated Triggers:</strong> Builds on
-                                every main branch push
+                                <strong>Automated Testing:</strong>
+                                Multi-version Node.js testing
                             </li>
                             <li>
-                                <strong>Multi-Node Testing:</strong> Matrix
-                                strategy for Node.js versions
+                                <strong>Code Quality:</strong> ESLint
+                                integration
                             </li>
                             <li>
-                                <strong>Dependency Management:</strong>
-                                Automated npm installation
+                                <strong>Docker Integration:</strong> Automated
+                                image building
                             </li>
                             <li>
-                                <strong>Secure Authentication:</strong> GitHub
-                                Secrets for Docker Hub
+                                <strong>Security:</strong> GitHub Secrets for
+                                credentials
                             </li>
                             <li>
-                                <strong>Build Optimization:</strong> Docker
-                                Buildx for advanced features
+                                <strong>Optimization:</strong> Build caching for
+                                faster deployments
                             </li>
                             <li>
-                                <strong>Automated Publishing:</strong> Direct
-                                push to Docker Hub registry
+                                <strong>Versioning:</strong> Git SHA tagging for
+                                traceability
                             </li>
                         </ul>
+                    </div>
 
-                        <div class="links-section">
-                            <button
-                                class="demo-button"
-                                onclick="showPipelineFlow()"
-                            >
-                                🔄 Pipeline Flow
-                            </button>
-                            <button
-                                class="demo-button"
-                                onclick="showSecurityFeatures()"
-                            >
-                                🔐 Security Features
-                            </button>
-                        </div>
-
-                        <div
-                            id="cicd-output"
-                            style="
-                                background: #1a202c;
-                                color: #68d391;
-                                padding: 15px;
-                                border-radius: 6px;
-                                font-family: &quot;Courier New&quot;, monospace;
-                                margin: 15px 0;
-                                min-height: 100px;
-                                white-space: pre-wrap;
-                            "
+                    <div class="links-section">
+                        <a
+                            href="https://github.com/tatoslover/dockerdemo/actions"
+                            target="_blank"
+                            class="link-button"
                         >
-                            Click a button above to see CI/CD pipeline details!
-                        </div>
+                            🔄 View GitHub Actions
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Live Demo Section -->
+            <!-- Exercise 3: AWS EC2 Setup -->
             <div class="section">
-                <div class="section-header" onclick="toggleSection(this)">
-                    <h2>🚀 Live Application Demo</h2>
+                <div
+                    class="section-header aws-section"
+                    onclick="toggleSection(this)"
+                >
+                    <h2>☁️ Exercise 3: AWS EC2 Setup & Docker Deployment</h2>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="description">
-                        <strong>Interactive Demo:</strong> Real-time Socket.IO
-                        chat application running in containerized environment
+                        <strong>Objective:</strong> Create and configure an AWS
+                        EC2 Ubuntu instance using free tier resources and deploy
+                        the Docker application to make it publicly accessible.
                     </div>
 
-                    <div class="chat-demo">
-                        <h3>📱 Socket.IO Chat Application</h3>
-                        <p>
-                            <strong>Features:</strong> Real-time messaging,
-                            typing indicators, user presence, nickname system
-                        </p>
+                    <div class="requirements-list">
+                        <h4>📋 Requirements:</h4>
+                        <ul>
+                            <li>
+                                Create EC2 instance using free tier (t2.micro)
+                            </li>
+                            <li>Configure Ubuntu 22.04 LTS operating system</li>
+                            <li>Set up security groups and access controls</li>
+                            <li>Configure SSH access and key management</li>
+                            <li>Install Docker and necessary dependencies</li>
+                            <li>
+                                Pull Docker image from Docker Hub to EC2
+                                instance
+                            </li>
+                            <li>Configure Docker container to run on EC2</li>
+                            <li>
+                                Set up port forwarding and security group rules
+                            </li>
+                            <li>
+                                Test application accessibility from public
+                                internet
+                            </li>
+                            <li>
+                                Share public URL with trainer for verification
+                            </li>
+                        </ul>
+                    </div>
 
-                        <ul id="messages" style="min-height: 200px"></ul>
-                        <p id="typingStatus"></p>
-                        <div style="margin: 10px 0">
-                            <strong>Online Users:</strong>
-                            <ul id="users"></ul>
-                        </div>
-                        <form id="form">
-                            <input
-                                id="input"
-                                autocomplete="off"
-                                placeholder="Type a message..."
-                            />
-                            <button type="submit">Send</button>
-                        </form>
+                    <div class="demo-section">
+                        <h3>🎯 EC2 & Docker Deployment Achievements</h3>
+                        <ul style="margin: 15px 0; padding-left: 20px">
+                            <li>
+                                <strong>Free Tier:</strong> Cost-effective
+                                t2.micro instance
+                            </li>
+                            <li>
+                                <strong>Security:</strong> Properly configured
+                                security groups
+                            </li>
+                            <li>
+                                <strong>Docker Ready:</strong> Container runtime
+                                installed
+                            </li>
+                            <li>
+                                <strong>SSH Access:</strong> Secure key-based
+                                authentication
+                            </li>
+                            <li>
+                                <strong>Network:</strong> Public IP with proper
+                                port access
+                            </li>
+                            <li>
+                                <strong>Public Access:</strong> Application
+                                accessible via public IP
+                            </li>
+                            <li>
+                                <strong>Container Management:</strong> Docker
+                                container running as daemon
+                            </li>
+                            <li>
+                                <strong>Auto-Restart:</strong> Container
+                                resilience configuration
+                            </li>
+                            <li>
+                                <strong>Monitoring:</strong> Container logs and
+                                health checks
+                            </li>
+                        </ul>
+                    </div>
 
-                        <div
-                            style="
-                                margin-top: 20px;
-                                padding: 15px;
-                                background: #f0f8ff;
-                                border-radius: 8px;
-                            "
+                    <div class="links-section">
+                        <a
+                            href="http://44.211.146.21"
+                            target="_blank"
+                            class="link-button aws-section"
                         >
-                            <h4>🐳 Docker Deployment Commands:</h4>
-                            <div
-                                style="
-                                    background: #2d3748;
-                                    color: #e2e8f0;
-                                    padding: 10px;
-                                    border-radius: 4px;
-                                    font-family:
-                                        &quot;Courier New&quot;, monospace;
-                                    margin-top: 10px;
-                                "
-                            >
-                                # Pull and run the containerized application
-                                docker pull username/socket-chat:latest docker
-                                run -p 3000:3000 username/socket-chat:latest #
-                                Visit http://localhost:3000 to use the chat
-                            </div>
-                        </div>
+                            🌐 Live Application (EC2)
+                        </a>
+                        <a
+                            href="http://44.211.146.21/portfolio"
+                            target="_blank"
+                            class="link-button aws-section"
+                        >
+                            📱 Portfolio Demo
+                        </a>
+                        <a
+                            href="http://44.211.146.21/health"
+                            target="_blank"
+                            class="link-button aws-section"
+                        >
+                            💚 Health Check
+                        </a>
+                        <a
+                            href="https://aws.amazon.com/ec2/instance-types/t2/"
+                            target="_blank"
+                            class="link-button aws-section"
+                        >
+                            ☁️ AWS EC2 Documentation
+                        </a>
+                        <a
+                            href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html"
+                            target="_blank"
+                            class="link-button aws-section"
+                        >
+                            🔐 Security Groups Guide
+                        </a>
+                        <a
+                            href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html"
+                            target="_blank"
+                            class="link-button aws-section"
+                        >
+                            📚 Docker on AWS Guide
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4: AWS Elastic Beanstalk -->
+            <div class="section">
+                <div
+                    class="section-header aws-section"
+                    onclick="toggleSection(this)"
+                >
+                    <h2>🌱 Exercise 4: AWS Elastic Beanstalk Deployment</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="description">
+                        <strong>Objective:</strong> Deploy a Node.js application
+                        using AWS Elastic Beanstalk for managed cloud hosting
+                        with automatic scaling and load balancing.
+                    </div>
+
+                    <div class="requirements-list">
+                        <h4>📋 Requirements:</h4>
+                        <ul>
+                            <li>
+                                Deploy GitHub repository to Elastic Beanstalk
+                            </li>
+                            <li>
+                                Use standalone Node.js application (no database)
+                            </li>
+                            <li>
+                                Configure environment settings and health checks
+                            </li>
+                            <li>Set up domain access and SSL (optional)</li>
+                            <li>Share live application URL with trainer</li>
+                        </ul>
+                    </div>
+
+                    <div class="demo-section">
+                        <h3>🎯 Beanstalk Deployment Features</h3>
+                        <ul style="margin: 15px 0; padding-left: 20px">
+                            <li>
+                                <strong>Managed Platform:</strong> Automatic
+                                server management
+                            </li>
+                            <li>
+                                <strong>Auto Scaling:</strong> Traffic-based
+                                scaling capabilities
+                            </li>
+                            <li>
+                                <strong>Load Balancing:</strong> Built-in
+                                application load balancer
+                            </li>
+                            <li>
+                                <strong>Health Monitoring:</strong>
+                                Comprehensive health checks
+                            </li>
+                            <li>
+                                <strong>Zero Downtime:</strong> Rolling
+                                deployments
+                            </li>
+                            <li>
+                                <strong>SSL/HTTPS:</strong> Easy SSL certificate
+                                integration
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="links-section">
+                        <a
+                            href="http://beanstalkdemo-env.eba-6hpbm22d.us-east-1.elasticbeanstalk.com"
+                            target="_blank"
+                            class="link-button aws-section"
+                        >
+                            🌐 Live Beanstalk Application
+                        </a>
+                        <a
+                            href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_nodejs.html"
+                            target="_blank"
+                            class="link-button aws-section"
+                        >
+                            📚 Beanstalk Node.js Guide
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script src="/socket.io/socket.io.js"></script>
         <script>
             // Toggle section functionality
             function toggleSection(header) {
@@ -793,370 +833,49 @@
                     : "rotate(0deg)";
             }
 
-            // Docker demonstration functions
-            function showDockerCommands() {
-                const output = document.getElementById("docker-output");
-                output.textContent = `=== Docker Implementation Commands ===
-
-# 1. Build the Docker image
-docker build -t socket-chat .
-
-# 2. Run locally for testing
-docker run -p 3000:3000 socket-chat
-
-# 3. Test the application
-curl http://localhost:3000
-
-# 4. Tag for Docker Hub repository
-docker tag socket-chat username/socket-chat:latest
-
-# 5. Push to Docker Hub (requires docker login)
-docker push username/socket-chat:latest
-
-# 6. Others can now pull and run
-docker pull username/socket-chat:latest
-docker run -p 3000:3000 username/socket-chat:latest
-
-✅ Image successfully published and accessible publicly!`;
-            }
-
-            function showBestPractices() {
-                const output = document.getElementById("docker-output");
-                output.textContent = `=== Docker Best Practices Implemented ===
-
-🏔️  Alpine Linux Base
-   ├─ Minimal image size (~50MB vs ~900MB)
-   ├─ Faster build and deployment times
-   └─ Reduced attack surface
-
-📁 Optimized Layer Structure
-   ├─ WORKDIR for organized file structure
-   ├─ Strategic COPY placement
-   └─ Efficient caching utilization
-
-🔒 Security Considerations
-   ├─ Non-root user (Node.js default)
-   ├─ Minimal base image
-   └─ No unnecessary packages
-
-⚡ Performance Optimizations
-   ├─ Single RUN command for npm install
-   ├─ Proper .dockerignore usage
-   └─ Explicit port exposure
-
-🚀 Production Readiness
-   ├─ CMD uses npm start (with nodemon)
-   ├─ Proper signal handling
-   └─ Environment variable support`;
-            }
-
-            function showPipelineFlow() {
-                const output = document.getElementById("cicd-output");
-                output.textContent = `=== CI/CD Pipeline Flow ===
-
-🔄 Trigger Event: Push to main branch
-
-🏗️  Build Stage:
-   1️⃣  Checkout repository code
-   2️⃣  Setup Node.js environment (v19.x)
-   3️⃣  Install application dependencies
-   4️⃣  Run tests (if configured)
-
-🐳 Docker Stage:
-   5️⃣  Login to Docker Hub (secure)
-   6️⃣  Setup Docker Buildx
-   7️⃣  Build Docker image
-   8️⃣  Push to Docker Hub registry
-
-✅ Result: Updated image available instantly!
-
-📊 Pipeline Benefits:
-   ├─ Automated on every commit
-   ├─ Consistent build environment
-   ├─ Zero-downtime deployments
-   ├─ Rollback capability
-   └─ Public accessibility
-
-🎯 Success Metrics:
-   ├─ Build time: ~2-3 minutes
-   ├─ Image size: ~50MB
-   └─ Deployment: Automated`;
-            }
-
-            function showSecurityFeatures() {
-                const output = document.getElementById("cicd-output");
-                output.textContent = `=== Security Features Implemented ===
-
-🔐 GitHub Secrets Management:
-   ├─ DOCKER_HUB_USERNAME (encrypted)
-   ├─ DOCKER_HUB_ACCESS_TOKEN (encrypted)
-   └─ No credentials in code
-
-🔒 Access Control:
-   ├─ Branch protection (main only)
-   ├─ Required status checks
-   └─ Merge restrictions
-
-🛡️  Container Security:
-   ├─ Alpine Linux (minimal attack surface)
-   ├─ No root user execution
-   ├─ Read-only filesystem where possible
-   └─ Explicit port exposure only
-
-🔍 Build Security:
-   ├─ Dependency vulnerability scanning
-   ├─ Secure base image updates
-   ├─ Immutable build artifacts
-   └─ Audit trail in GitHub Actions
-
-⚡ Runtime Security:
-   ├─ Process isolation
-   ├─ Network segmentation
-   ├─ Resource limitations
-   └─ Health monitoring`;
-            }
-
-            // Socket.IO Chat Implementation with Smart Detection
-            let socket;
-            let isConnected = false;
-            const form = document.getElementById("form");
-            const input = document.getElementById("input");
-            const messages = document.getElementById("messages");
-            const typingStatus = document.getElementById("typingStatus");
-            const usersList = document.getElementById("users");
-
-            // Try to connect to Socket.IO server
-            try {
-                socket = io();
-
-                socket.on("connect", () => {
-                    isConnected = true;
-                    initializeLiveChat();
-                });
-
-                socket.on("connect_error", () => {
-                    isConnected = false;
-                    initializeStaticDemo();
-                });
-
-                // Timeout fallback if no connection after 3 seconds
-                setTimeout(() => {
-                    if (!isConnected) {
-                        initializeStaticDemo();
-                    }
-                }, 3000);
-            } catch (error) {
-                isConnected = false;
-                initializeStaticDemo();
-            }
-
-            function initializeLiveChat() {
-                // Add live demo welcome message
-                const welcomeMsg = document.createElement("li");
-                welcomeMsg.innerHTML =
-                    "<strong>🎉 Welcome to the LIVE Dockerized Chat Demo!</strong>";
-                welcomeMsg.style.background = "#e8f5e8";
-                welcomeMsg.style.color = "#2e7d32";
-                welcomeMsg.style.fontWeight = "bold";
-                messages.appendChild(welcomeMsg);
-
-                const liveMsg = document.createElement("li");
-                liveMsg.innerHTML =
-                    "✅ <em>Server is running - this is a real-time chat!</em>";
-                liveMsg.style.background = "#f0f8ff";
-                liveMsg.style.color = "#1976d2";
-                liveMsg.style.fontStyle = "italic";
-                messages.appendChild(liveMsg);
-
-                let nickname =
-                    prompt("Enter your nickname for the live demo:") || "Guest";
-                socket.emit("choose name", nickname);
-
-                setupLiveChatHandlers();
-            }
-
-            function initializeStaticDemo() {
-                // Add static demo welcome message
-                const welcomeMsg = document.createElement("li");
-                welcomeMsg.innerHTML =
-                    "<strong>🎭 Dockerized Chat Demo (Static Preview)</strong>";
-                welcomeMsg.style.background = "#fff3e0";
-                welcomeMsg.style.color = "#f57c00";
-                welcomeMsg.style.fontWeight = "bold";
-                messages.appendChild(welcomeMsg);
-
-                const staticMsg = document.createElement("li");
-                staticMsg.innerHTML =
-                    "ℹ️ <em>Server not running - showing interface preview with simulated messages</em>";
-                staticMsg.style.background = "#f5f5f5";
-                staticMsg.style.color = "#666";
-                staticMsg.style.fontStyle = "italic";
-                messages.appendChild(staticMsg);
-
-                setupStaticDemo();
-            }
-
-            function setupLiveChatHandlers() {
-                // Submit message (LIVE)
-                form.addEventListener("submit", function (e) {
-                    e.preventDefault();
-                    if (input.value) {
-                        const item = document.createElement("li");
-                        item.textContent = `Me: ${input.value}`;
-                        item.style.background = "#f0f8ff";
-                        messages.appendChild(item);
-                        socket.emit("chat message", input.value);
-                        input.value = "";
-                        socket.emit("stop typing");
-                        messages.scrollTop = messages.scrollHeight;
-                    }
-                });
-
-                // Typing indicator (LIVE)
-                let typingTimeout;
-                input.addEventListener("input", () => {
-                    socket.emit("typing");
-                    clearTimeout(typingTimeout);
-                    typingTimeout = setTimeout(() => {
-                        socket.emit("stop typing");
-                    }, 1000);
-                });
-
-                // Incoming chat messages (LIVE)
-                socket.on("chat message", function (msg) {
-                    const item = document.createElement("li");
-                    item.textContent = msg;
-                    messages.appendChild(item);
-                    messages.scrollTop = messages.scrollHeight;
-                });
-
-                // New user joined (LIVE)
-                socket.on("new user", (data) => {
-                    const item = document.createElement("li");
-                    item.textContent = `🎉 ${data.nickname} ${data.text}`;
-                    item.style.background = "#e8f5e8";
-                    item.style.color = "#2e7d32";
-                    messages.appendChild(item);
-                    messages.scrollTop = messages.scrollHeight;
-                });
-
-                // User left (LIVE)
-                socket.on("user left", (msg) => {
-                    const item = document.createElement("li");
-                    item.textContent = `👋 ${msg}`;
-                    item.style.background = "#fff3e0";
-                    item.style.color = "#f57c00";
-                    messages.appendChild(item);
-                    messages.scrollTop = messages.scrollHeight;
-                });
-
-                // Show typing (LIVE)
-                socket.on("user typing", (name) => {
-                    typingStatus.innerText = `${name} is typing...`;
-                });
-
-                socket.on("not typing", () => {
-                    typingStatus.innerText = "";
-                });
-
-                // Show online users (LIVE)
-                socket.on("update user list", (users) => {
-                    usersList.innerHTML = "";
-                    users.forEach((user) => {
-                        const li = document.createElement("li");
-                        li.textContent = `👤 ${user}`;
-                        li.style.margin = "2px 0";
-                        usersList.appendChild(li);
-                    });
-                });
-            }
-
-            function setupStaticDemo() {
-                // Add some simulated users and messages for demo
-                const simulatedUsers = ["Alice", "Bob", "Carol"];
-                const simulatedMessages = [
-                    "Alice: Hey everyone! This Docker setup is amazing! 🐳",
-                    "Bob: I love how the CI/CD pipeline automatically deploys",
-                    "Carol: The containerization makes deployment so smooth",
-                    "Alice: Socket.IO + Docker = Perfect combo!",
-                    "Bob: This portfolio demo is really impressive",
-                ];
-
-                // Show simulated users
-                usersList.innerHTML = "";
-                simulatedUsers.forEach((user) => {
-                    const li = document.createElement("li");
-                    li.textContent = `👤 ${user}`;
-                    li.style.margin = "2px 0";
-                    usersList.appendChild(li);
-                });
-
-                // Add simulated messages with delay
-                simulatedMessages.forEach((msg, index) => {
-                    setTimeout(
-                        () => {
-                            const item = document.createElement("li");
-                            item.textContent = msg;
-                            item.style.background = "#f9f9f9";
-                            item.style.opacity = "0.8";
-                            messages.appendChild(item);
-                            messages.scrollTop = messages.scrollHeight;
-                        },
-                        (index + 1) * 2000,
-                    );
-                });
-
-                // Static form handler
-                form.addEventListener("submit", function (e) {
-                    e.preventDefault();
-                    if (input.value) {
-                        const item = document.createElement("li");
-                        item.textContent = `Me: ${input.value}`;
-                        item.style.background = "#f0f8ff";
-                        messages.appendChild(item);
-
-                        // Simulate response
-                        setTimeout(() => {
-                            const responses = [
-                                "Great message! (This is a simulated response)",
-                                "Interesting point! (Demo mode - server not running)",
-                                "Thanks for sharing! (Static preview)",
-                                "Cool! (This would be real-time if server was running)",
-                            ];
-                            const randomResponse =
-                                responses[
-                                    Math.floor(Math.random() * responses.length)
-                                ];
-                            const responseItem = document.createElement("li");
-                            responseItem.textContent = `Demo Bot: ${randomResponse}`;
-                            responseItem.style.background = "#f9f9f9";
-                            responseItem.style.opacity = "0.8";
-                            messages.appendChild(responseItem);
-                            messages.scrollTop = messages.scrollHeight;
-                        }, 1000);
-
-                        input.value = "";
-                        messages.scrollTop = messages.scrollHeight;
-                    }
-                });
-
-                // Simulated typing indicator
-                input.addEventListener("input", () => {
-                    if (input.value) {
-                        typingStatus.innerText =
-                            "Demo Bot is preparing a response...";
-                        setTimeout(() => {
-                            typingStatus.innerText = "";
-                        }, 2000);
-                    }
-                });
-            }
-
             // Initialize with first section open
             document.addEventListener("DOMContentLoaded", function () {
-                // Auto-open overview section is already active
-                console.log("🐳 Docker & CI/CD Portfolio loaded successfully!");
+                console.log("🚀 Module 10 Lab Portfolio loaded successfully!");
+                console.log("📚 All 5 exercises completed and documented");
             });
         </script>
+
+        <!-- Footer Section -->
+        <div
+            class="footer"
+            style="
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                padding: 40px;
+                margin-top: 40px;
+                text-align: center;
+                color: white;
+                backdrop-filter: blur(10px);
+            "
+        >
+            <h3 style="color: white; margin-bottom: 20px; font-size: 1.5em">
+                2025 Samuel Love - Web Development Portfolio
+            </h3>
+            <a
+                href="https://github.com/tatoslover/Module10Lab"
+                target="_blank"
+                style="
+                    display: inline-block;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    padding: 15px 30px;
+                    text-decoration: none;
+                    border-radius: 50px;
+                    font-weight: bold;
+                    font-size: 1.1em;
+                    transition: all 0.3s ease;
+                    border: 2px solid rgba(255, 255, 255, 0.3);
+                "
+                onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'; this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'; this.style.transform='translateY(0)'"
+            >
+                View Project on GitHub
+            </a>
+        </div>
     </body>
 </html>

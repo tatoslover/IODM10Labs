@@ -1,0 +1,30 @@
+{
+  "name": "elastic-beanstalk-poem",
+  "version": "1.0.0",
+  "description": "A funny Node.js app about beanstalks for AWS Elastic Beanstalk deployment",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "aws",
+    "elastic-beanstalk",
+    "node.js",
+    "poetry",
+    "funny",
+    "beanstalk"
+  ],
+  "author": "Samuel Love",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
