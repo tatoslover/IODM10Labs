@@ -6,9 +6,29 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Serve the HTML file
+// Serve different HTML files based on environment or route
 app.get("/", (req, res) => {
+  // Check for environment variable or use default portfolio version
+  const htmlFile =
+    process.env.NODE_ENV === "docker" ? "/index-docker.html" : "/index.html";
+  res.sendFile(__dirname + htmlFile);
+});
+
+// Serve Docker-specific version explicitly
+app.get("/docker", (req, res) => {
+  res.sendFile(__dirname + "/index-docker.html");
+});
+
+// Serve portfolio version explicitly
+app.get("/portfolio", (req, res) => {
   res.sendFile(__dirname + "/index.html");
+});
+
+// Health check endpoint for AWS deployment
+app.get("/health", (req, res) => {
+  res
+    .status(200)
+    .json({ status: "healthy", timestamp: new Date().toISOString() });
 });
 
 // Store users with their socket.id
